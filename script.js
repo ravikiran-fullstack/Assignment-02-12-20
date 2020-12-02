@@ -3,36 +3,29 @@ async function fetchCountriesData() {
   const countriesDataResponse = await fetch(url);
   const countriesData = await countriesDataResponse.json();
   generateHtml(countriesData);
-  console.log(countriesData);
 }
 
+// Retrieve Countries Data
 fetchCountriesData();
 
-async function checkWeather(countryLatLng) {
+// Retrieves weather data 
+async function checkWeather(countryLatLng, countryName) {
   let latLngArr = countryLatLng.split(",");
-
   let latLngArrFormatted = latLngArr.map((ele) => (+ele).toFixed(2));
   const lat = latLngArrFormatted[0];
   const lng = latLngArrFormatted[1];
-  console.log(lat, lng);
 
   const weatherData = await fetchWeather(lat, lng);
-  console.log(weatherData);
-  //document.getElementById('exampleModalCenter').modal();
 
-  // Create a modal using DOM functions
-  // Append it to the body of the page
-  // createModal();
-
-  //Open it and pass weather data to it.
-  $("#exampleModalCenter").modal();
-  $("#countryName").text(weatherData.name || "NA");
-  $("#temperature").text(formatTemperature(weatherData.main.temp));
-  $("#weather").text(weatherData.weather[0].description);
+  showModal(weatherData, countryName);
 }
 
-function formatTemperature(temperature) {
-  return (+temperature - 273).toFixed(2);
+//Open Modal and pass weather data to it.
+function showModal(weatherData, countryName){
+  $("#exampleModalCenter").modal();
+  $("#countryName").text(countryName || "NA");
+  $("#temperature").text(formatTemperature(weatherData.main.temp));
+  $("#weather").text(weatherData.weather[0].description);
 }
 
 async function fetchWeather(lat, lng) {
@@ -41,6 +34,10 @@ async function fetchWeather(lat, lng) {
   let response = await fetch(url);
   let data = await response.json();
   return data;
+}
+
+function formatTemperature(temperature) {
+  return (+temperature - 273).toFixed(2);
 }
 
 //*********************************************************************DOM ******************************************************
@@ -100,7 +97,7 @@ function createModal() {
   modalBody.append(countryDiv, temperatureDiv, weatherDiv);
 
   const modalFooter = createDomElement("div", "modal-footer");
-  const modalCloseButton = createDomElement("div", "btn btn-secondary");
+  const modalCloseButton = createDomElement("div", "btn btn-primary");
   modalCloseButton.setAttribute("data-dismiss", "modal");
   modalCloseButton.innerHTML = "Close";
   modalFooter.append(modalCloseButton);
@@ -117,7 +114,7 @@ function createCard(countryObj) {
   const card = createDomElement("div", "card");
   const cardBody = createDomElement("div", "card-body");
   // If the name of the country is too long change the font size
-  const cardTitle = createDomElement("h5", "card-title");
+  const cardTitle = createDomElement("h5", "card-title text-center blackBackground");
   if (countryObj.name.length > 15) {
     cardTitle.classList.add("short-title");
   }
@@ -129,7 +126,7 @@ function createCard(countryObj) {
 
   const cardContents = createDomElement("div", "card-contents");
 
-  const capitalP = createDomElement("p", "capital");
+  const capitalP = createDomElement("p");
   capitalP.innerHTML = "Capital:";
   const capitalPSpan = createDomElement("span");
   if (!countryObj.capital) {
@@ -160,19 +157,19 @@ function createCard(countryObj) {
 
   const checkWeatherButton = createDomElement(
     "button",
-    "weatherBtn btn btn-warning",
+    "weatherBtn btn btn-primary",
     countryObj.alpha2Code
   );
-  checkWeatherButton.innerHTML = "Check weather";
+  checkWeatherButton.innerHTML = "Check for Weather";
   checkWeatherButton.setAttribute(
     "onclick",
-    `checkWeather('${countryObj.latlng}')`
+    `checkWeather('${countryObj.latlng}', '${countryObj.name}')`
   );
 
   cardContents.append(
     capitalP,
-    countryCodesP,
     regionP,
+    countryCodesP,
     latLongP,
     checkWeatherButton
   );
@@ -197,17 +194,23 @@ function createDomElement(ele, eleClass = "", eleId = "") {
 
 // Generates Body of the document
 function generateHtml(countriesInfo) {
-  const container = createDomElement("div", "container-fluid");
-  const row = createDomElement("div", "row");
-  const column = createDomElement("div", "col-12 countriesInfo");
-
-  countriesInfo.forEach((country) => {
-    const card = createCard(country);
-    column.append(card);
-  });
-
-  row.append(column);
-  container.append(row);
+  const container = createDomElement("div", "container");
+    const row = createDomElement("div", "row");
+      const column = createDomElement("div", "col-lg-12");
+        const cardRow = createDomElement('div', 'row');
+          
+            countriesInfo.forEach((country) => {
+              const cardColumn = createDomElement('div', 'col-lg-4 col-sm-12 mt-5')
+              const card = createCard(country);
+              cardColumn.append(card);
+              cardRow.append(cardColumn);
+            });
+        column.append(cardRow);    
+      row.append(column);
+    container.append(row);
   document.body.append(container);
+  
+  // Create a modal using DOM functions
+  // Append it to the body of the page
   createModal();
 }
