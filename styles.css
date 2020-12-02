@@ -1,0 +1,119 @@
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background-color: #e8e8e8 !important;
+}
+
+.countriesInfo{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-left: 13px !important;
+  padding-top: 13px !important;
+}
+
+.card{
+  width: 18rem;
+  margin: 5px 0;
+}
+
+.card-body{
+  padding: 10px 0 0 0 !important;
+}
+
+.card-title{
+  padding-left: 10px;
+}
+
+.card-img-top{
+  flex-shrink: 0;
+    width: 100%;
+    height: 56%;
+}
+
+.capital span{
+  font-weight: bold;
+  background-color: green;
+  color: white;
+  padding: 3px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.card-contents{
+  padding: 15px;
+}
+
+.card-contents p{
+  padding: 0;
+  margin: 0;
+}
+
+.card-contents p span{
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.short-title{
+  font-size: 13px;
+}
+
+/* On screens that are 600px or less */
+@media screen and (max-width: 600px) {
+  .card{
+    width: 49%;
+  }
+
+  .card-title{
+    margin-bottom: 0.3rem !important;
+    font-size: 15px;
+  }
+
+  .card-contents p span{
+    margin-left: 10px;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  .card-contents p{
+    font-size: 10px;
+  }
+
+  .card-contents{
+    padding: 5px;
+  }
+
+  .short-title{
+    font-size: 10px;
+  }
+}
+
+/* On screens that are 800px or less And orientation is landscape */
+@media only screen and (orientation: landscape) and (max-width: 900px) {
+  .card{
+    width: 32%;
+  }
+  .card-contents p span{
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .card-contents p{
+    font-size: 12px;
+  }
+
+  .card-contents{
+    padding: 10px;
+  }
+}
