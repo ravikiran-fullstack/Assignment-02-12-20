@@ -131,7 +131,7 @@ body{
   display: inline;
 }
 
-.modal-body div span {
+.degreeCelsius{
   content: "\2103";
 }
 

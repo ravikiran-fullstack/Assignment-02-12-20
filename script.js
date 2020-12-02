@@ -48,7 +48,7 @@ customFetchApi(url, config)
     
     //Open it and pass weather data to it.
     $("#exampleModalCenter").modal();
-    $("#countryName").text(weatherData.name);
+    $("#countryName").text(weatherData.name || 'NA');
     $("#temperature").text(formatTemperature(weatherData.main.temp));
     $("#weather").text(weatherData.weather[0].description);
     
@@ -102,9 +102,9 @@ function createModal(){
         const temperatureDiv = createDomElement('div');
           const temperatureP = createDomElement('p');
           temperatureP.innerHTML = 'Temperature: ';
-          const temperaturePValue = createDomElement('p', '', 'temperature');
-          const degreeSymbol = createDomElement('span');
-          degreeSymbol.innerHTML = '&#8451;';
+          const temperaturePValue = createDomElement('p', 'font-weight-bold', 'temperature');
+          const degreeSymbol = createDomElement('span', 'font-weight-bold degreeCelsius');
+          degreeSymbol.innerHTML = ' &#8451;';
         temperatureDiv.append(temperatureP, temperaturePValue, degreeSymbol);
         
         const weatherDiv = createDomElement('div');
