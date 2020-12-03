@@ -5,7 +5,7 @@ async function fetchCountriesData() {
       const countriesDataResponse = await fetch(url);
       const countriesData = await countriesDataResponse.json();    
       generateHtml(countriesData);
-  }catch(err){
+  } catch(err){
       console.error(err);
   }
 }
@@ -36,6 +36,7 @@ async function showModal(weatherData, countryName){
   const iconImageSrc = await getWeatherIcon(weatherData.weather[0].icon);
   $("#weatherIcon").attr('src',iconImageSrc);
 }
+
 // Fetch Weather icon from openweathermap server
 async function getWeatherIcon(iconCode){
   const url = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
@@ -53,7 +54,7 @@ async function fetchWeather(lat, lng) {
   try{
       const response = await fetch(url);
       return await response.json();
-  }catch(err){
+  } catch(err){
       console.error(err);
   }
 }
