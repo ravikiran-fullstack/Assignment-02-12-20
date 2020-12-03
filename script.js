@@ -1,8 +1,13 @@
 async function fetchCountriesData() {
   const url = "https://restcountries.eu/rest/v2/all";
-  const countriesDataResponse = await fetch(url);
-  const countriesData = await countriesDataResponse.json();
-  generateHtml(countriesData);
+  
+  try{
+      const countriesDataResponse = await fetch(url);
+      const countriesData = await countriesDataResponse.json();    
+      generateHtml(countriesData);
+  }catch(err){
+      console.error(err);
+  }
 }
 
 // Retrieve Countries Data
@@ -14,33 +19,43 @@ async function checkWeather(countryLatLng, countryName) {
   let latLngArrFormatted = latLngArr.map((ele) => (+ele).toFixed(2));
   const lat = latLngArrFormatted[0];
   const lng = latLngArrFormatted[1];
-  const weatherData = await fetchWeather(lat, lng);
-
-  showModal(weatherData, countryName);
+  try {
+    const weatherData = await fetchWeather(lat, lng);
+    showModal(weatherData, countryName);
+  } catch(err){
+      console.error(err);
+  }
 }
 
 //Open Modal and pass weather data to it.
 async function showModal(weatherData, countryName){
-  console.log(weatherData);
   $("#exampleModalCenter").modal();
   $("#countryName").text(countryName || "NA");
   $("#temperature").text(formatTemperature(weatherData.main.temp));
   $("#weather").text(weatherData.weather[0].description);
   const iconImageSrc = await getWeatherIcon(weatherData.weather[0].icon);
   $("#weatherIcon").attr('src',iconImageSrc);
-
 }
 // Fetch Weather icon from openweathermap server
 async function getWeatherIcon(iconCode){
-  const weatherIconResponse = await fetch(`https://openweathermap.org/img/wn/${iconCode}@2x.png`); 
-  return weatherIconResponse.url;
+  const url = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  try {
+    const weatherIconResponse = await fetch(url); 
+    return weatherIconResponse.url;
+  } catch(err){
+      console.error(err);
+  }
 }
 
 // Fetch weather for latitude and longitude passed to the  function
 async function fetchWeather(lat, lng) {
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=d9da5c116c793405f65774bb82a48990`;
-  const response = await fetch(url);
-  return await response.json();
+  try{
+      const response = await fetch(url);
+      return await response.json();
+  }catch(err){
+      console.error(err);
+  }
 }
 
 function formatTemperature(temperature) {
@@ -144,7 +159,6 @@ function createCard(countryObj) {
           const latLongP = createDomElement("p");
             latLongP.innerHTML = "Lat Long:";
             const latLongPSpan = createDomElement("span");
-            // console.log(countryObj.latlng);
             latLongPSpan.innerHTML = formatLatLng(countryObj.latlng);
           latLongP.append(latLongPSpan);
 
@@ -160,7 +174,6 @@ function createCard(countryObj) {
 
 // Formats the latitude and longitude
 function formatLatLng(latLngArr) {
-  //console.log(latLngArr);
   return latLngArr.map((ele) => ele.toFixed(2)).join(",");
 }
 
