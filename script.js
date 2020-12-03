@@ -14,7 +14,6 @@ async function checkWeather(countryLatLng, countryName) {
   let latLngArrFormatted = latLngArr.map((ele) => (+ele).toFixed(2));
   const lat = latLngArrFormatted[0];
   const lng = latLngArrFormatted[1];
-
   const weatherData = await fetchWeather(lat, lng);
 
   showModal(weatherData, countryName);
@@ -31,12 +30,13 @@ async function showModal(weatherData, countryName){
   $("#weatherIcon").attr('src',iconImageSrc);
 
 }
-
+// Fetch Weather icon from openweathermap server
 async function getWeatherIcon(iconCode){
   const weatherIconResponse = await fetch(`https://openweathermap.org/img/wn/${iconCode}@2x.png`); 
   return weatherIconResponse.url;
 }
 
+// Fetch weather for latitude and longitude passed to the  function
 async function fetchWeather(lat, lng) {
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=d9da5c116c793405f65774bb82a48990`;
   const response = await fetch(url);
@@ -57,48 +57,46 @@ function createModal() {
   modal.setAttribute("aria-labelledby", "true");
   modal.setAttribute("aria-hidden", "true");
 
-  const modalDialog = createDomElement( "div", "modal-dialog modal-dialog-centered");
-  modalDialog.setAttribute("role", "document");
+    const modalDialog = createDomElement( "div", "modal-dialog modal-dialog-centered");
+    modalDialog.setAttribute("role", "document");
 
-  const modalContent = createDomElement("div", "modal-content modal-custom-color");
-  const modalHeader = createDomElement("div", "modal-header");
-  const modalTitle = createDomElement( "h5", "modal-title", "exampleModalLongTitle");
-  modalTitle.innerHTML = "Weather Report";
+      const modalContent = createDomElement("div", "modal-content modal-custom-color");
+        const modalHeader = createDomElement("div", "modal-header");
+          const modalTitle = createDomElement( "h5", "modal-title", "exampleModalLongTitle");
+          modalTitle.innerHTML = "Weather Report";
+        modalHeader.append(modalTitle);
 
-  modalHeader.append(modalTitle);
+        const modalBody = createDomElement("div", "modal-body");
+          const countryDiv = createDomElement("div");
+            const countryP = createDomElement("p");
+            countryP.innerHTML = "Country: ";
+            const countryPName = createDomElement("p", "", "countryName");
+          countryDiv.append(countryP, countryPName);
 
-  const modalBody = createDomElement("div", "modal-body");
-  const countryDiv = createDomElement("div");
-  const countryP = createDomElement("p");
-  countryP.innerHTML = "Country: ";
-  const countryPName = createDomElement("p", "", "countryName");
-  countryDiv.append(countryP, countryPName);
+          const temperatureDiv = createDomElement("div");
+            const temperatureP = createDomElement("p");
+            temperatureP.innerHTML = "Temperature: ";
+            const temperaturePValue = createDomElement( "p","font-weight-bold","temperature");
+            const degreeSymbol = createDomElement( "span", "font-weight-bold degreeCelsius");
+            degreeSymbol.innerHTML = " &#8451;";
+          temperatureDiv.append(temperatureP, temperaturePValue, degreeSymbol);
 
-  const temperatureDiv = createDomElement("div");
-  const temperatureP = createDomElement("p");
-  temperatureP.innerHTML = "Temperature: ";
-  const temperaturePValue = createDomElement( "p","font-weight-bold","temperature");
-  const degreeSymbol = createDomElement( "span", "font-weight-bold degreeCelsius");
-  degreeSymbol.innerHTML = " &#8451;";
-  temperatureDiv.append(temperatureP, temperaturePValue, degreeSymbol);
+          const weatherDiv = createDomElement("div");
+            const weatherP = createDomElement("p");
+            weatherP.innerHTML = "Weather: ";
+            const weatherPValue = createDomElement("p", "font-weight-bold", "weather");
+          const weatherIcon = createDomElement('img', '', 'weatherIcon');
+          weatherDiv.append(weatherP, weatherPValue, weatherIcon);
+        modalBody.append(countryDiv, temperatureDiv, weatherDiv);
 
-  const weatherDiv = createDomElement("div");
-  const weatherP = createDomElement("p");
-  weatherP.innerHTML = "Weather: ";
-  const weatherPValue = createDomElement("p", "font-weight-bold", "weather");
+        const modalFooter = createDomElement("div", "modal-footer");
+          const modalCloseButton = createDomElement("div", "btn btn-primary");
+          modalCloseButton.setAttribute("data-dismiss", "modal");
+          modalCloseButton.innerHTML = "Close";
+        modalFooter.append(modalCloseButton);
 
-  const weatherIcon = createDomElement('img', '', 'weatherIcon');
-  weatherDiv.append(weatherP, weatherPValue, weatherIcon);
-  modalBody.append(countryDiv, temperatureDiv, weatherDiv);
-
-  const modalFooter = createDomElement("div", "modal-footer");
-  const modalCloseButton = createDomElement("div", "btn btn-primary");
-  modalCloseButton.setAttribute("data-dismiss", "modal");
-  modalCloseButton.innerHTML = "Close";
-  modalFooter.append(modalCloseButton);
-
-  modalContent.append(modalHeader, modalBody, modalFooter);
-  modalDialog.append(modalContent);
+      modalContent.append(modalHeader, modalBody, modalFooter);
+    modalDialog.append(modalContent);
   modal.append(modalDialog);
 
   document.body.append(modal);
@@ -106,70 +104,57 @@ function createModal() {
 
 //Creates individual Card
 function createCard(countryObj) {
-  const card = createDomElement("div", "card");
-  const cardBody = createDomElement("div", "card-body");
-  // If the name of the country is too long change the font size
-  const cardTitle = createDomElement("h5", "card-title text-center blackBackground");
-  if (countryObj.name.length > 15) {
-    cardTitle.classList.add("short-title");
-  }
-  cardTitle.innerHTML = countryObj.name;
+    const card = createDomElement("div", "card");
+      const cardBody = createDomElement("div", "card-body");
+        const cardTitle = createDomElement("h5", "card-title text-center blackBackground");
+        // If the name of the country is too long, then change the font size
+        if (countryObj.name.length > 15) {
+          cardTitle.classList.add("short-title");
+        }
+        cardTitle.innerHTML = countryObj.name;
 
-  const image = createDomElement("img", "card-img-top");
-  image.src = countryObj.flag;
-  image.alt = countryObj.name;
+        const image = createDomElement("img", "card-img-top");
+        image.src = countryObj.flag;
+        image.alt = countryObj.name;
 
-  const cardContents = createDomElement("div", "card-contents");
+        const cardContents = createDomElement("div", "card-contents");
 
-  const capitalP = createDomElement("p");
-  capitalP.innerHTML = "Capital:";
-  const capitalPSpan = createDomElement("span");
-  if (!countryObj.capital) {
-    capitalPSpan.innerHTML = "NA";
-  } else {
-    capitalPSpan.innerHTML = countryObj.capital;
-  }
-  capitalP.append(capitalPSpan);
+          const capitalP = createDomElement("p");
+            capitalP.innerHTML = "Capital:";
+            const capitalPSpan = createDomElement("span");
+            if (!countryObj.capital) {
+              capitalPSpan.innerHTML = "NA";
+            } else {
+              capitalPSpan.innerHTML = countryObj.capital;
+            }
+          capitalP.append(capitalPSpan);
 
-  const countryCodesP = createDomElement("p");
-  countryCodesP.innerHTML = "Country Codes: ";
-  const countryCodesPSpan = createDomElement("span");
-  countryCodesPSpan.innerHTML = `${countryObj.alpha2Code}, ${countryObj.alpha3Code}`;
-  countryCodesP.append(countryCodesPSpan);
+          const countryCodesP = createDomElement("p");
+            countryCodesP.innerHTML = "Country Codes: ";
+            const countryCodesPSpan = createDomElement("span");
+            countryCodesPSpan.innerHTML = `${countryObj.alpha2Code}, ${countryObj.alpha3Code}`;
+          countryCodesP.append(countryCodesPSpan);
 
-  const regionP = createDomElement("p");
-  regionP.innerHTML = "Region:";
-  const regionPSpan = createDomElement("span");
-  regionPSpan.innerHTML = countryObj.region;
-  regionP.append(regionPSpan);
+          const regionP = createDomElement("p");
+            regionP.innerHTML = "Region:";
+            const regionPSpan = createDomElement("span");
+            regionPSpan.innerHTML = countryObj.region;
+          regionP.append(regionPSpan);
 
-  const latLongP = createDomElement("p");
-  latLongP.innerHTML = "Lat Long:";
-  const latLongPSpan = createDomElement("span");
-  // console.log(countryObj.latlng);
-  latLongPSpan.innerHTML = formatLatLng(countryObj.latlng);
-  latLongP.append(latLongPSpan);
+          const latLongP = createDomElement("p");
+            latLongP.innerHTML = "Lat Long:";
+            const latLongPSpan = createDomElement("span");
+            // console.log(countryObj.latlng);
+            latLongPSpan.innerHTML = formatLatLng(countryObj.latlng);
+          latLongP.append(latLongPSpan);
 
-  const checkWeatherButton = createDomElement(
-    "button",
-    "weatherBtn btn btn-primary",
-    countryObj.alpha2Code
-  );
-  checkWeatherButton.innerHTML = "Check for Weather";
-  checkWeatherButton.setAttribute(
-    "onclick",
-    `checkWeather('${countryObj.latlng}', '${countryObj.name}')`
-  );
+          const checkWeatherButton = createDomElement("button", "weatherBtn btn btn-primary", countryObj.alpha2Code);
+            checkWeatherButton.innerHTML = "Check for Weather";
+          checkWeatherButton.setAttribute( "onclick", `checkWeather('${countryObj.latlng}', '${countryObj.name}')`);
 
-  cardContents.append(
-    capitalP,
-    regionP,
-    countryCodesP,
-    latLongP,
-    checkWeatherButton
-  );
-  cardBody.append(cardTitle, image, cardContents);
-  card.append(cardBody);
+        cardContents.append( capitalP, regionP, countryCodesP, latLongP, checkWeatherButton);
+      cardBody.append(cardTitle, image, cardContents);
+    card.append(cardBody);
   return card;
 }
 
