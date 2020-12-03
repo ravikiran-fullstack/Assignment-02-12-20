@@ -21,19 +21,26 @@ async function checkWeather(countryLatLng, countryName) {
 }
 
 //Open Modal and pass weather data to it.
-function showModal(weatherData, countryName){
+async function showModal(weatherData, countryName){
+  console.log(weatherData);
   $("#exampleModalCenter").modal();
   $("#countryName").text(countryName || "NA");
   $("#temperature").text(formatTemperature(weatherData.main.temp));
   $("#weather").text(weatherData.weather[0].description);
+  const iconImageSrc = await getWeatherIcon(weatherData.weather[0].icon);
+  $("#weatherIcon").attr('src',iconImageSrc);
+
+}
+
+async function getWeatherIcon(iconCode){
+  const weatherIconResponse = await fetch(`https://openweathermap.org/img/wn/${iconCode}@2x.png`); 
+  return weatherIconResponse.url;
 }
 
 async function fetchWeather(lat, lng) {
-  let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=d9da5c116c793405f65774bb82a48990`;
-
-  let response = await fetch(url);
-  let data = await response.json();
-  return data;
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=d9da5c116c793405f65774bb82a48990`;
+  const response = await fetch(url);
+  return await response.json();
 }
 
 function formatTemperature(temperature) {
@@ -50,19 +57,12 @@ function createModal() {
   modal.setAttribute("aria-labelledby", "true");
   modal.setAttribute("aria-hidden", "true");
 
-  const modalDialog = createDomElement(
-    "div",
-    "modal-dialog modal-dialog-centered"
-  );
+  const modalDialog = createDomElement( "div", "modal-dialog modal-dialog-centered");
   modalDialog.setAttribute("role", "document");
 
-  const modalContent = createDomElement("div", "modal-content");
+  const modalContent = createDomElement("div", "modal-content modal-custom-color");
   const modalHeader = createDomElement("div", "modal-header");
-  const modalTitle = createDomElement(
-    "h5",
-    "modal-title",
-    "exampleModalLongTitle"
-  );
+  const modalTitle = createDomElement( "h5", "modal-title", "exampleModalLongTitle");
   modalTitle.innerHTML = "Weather Report";
 
   modalHeader.append(modalTitle);
@@ -77,23 +77,18 @@ function createModal() {
   const temperatureDiv = createDomElement("div");
   const temperatureP = createDomElement("p");
   temperatureP.innerHTML = "Temperature: ";
-  const temperaturePValue = createDomElement(
-    "p",
-    "font-weight-bold",
-    "temperature"
-  );
-  const degreeSymbol = createDomElement(
-    "span",
-    "font-weight-bold degreeCelsius"
-  );
+  const temperaturePValue = createDomElement( "p","font-weight-bold","temperature");
+  const degreeSymbol = createDomElement( "span", "font-weight-bold degreeCelsius");
   degreeSymbol.innerHTML = " &#8451;";
   temperatureDiv.append(temperatureP, temperaturePValue, degreeSymbol);
 
   const weatherDiv = createDomElement("div");
   const weatherP = createDomElement("p");
   weatherP.innerHTML = "Weather: ";
-  const weatherPValue = createDomElement("p", "", "weather");
-  weatherDiv.append(weatherP, weatherPValue);
+  const weatherPValue = createDomElement("p", "font-weight-bold", "weather");
+
+  const weatherIcon = createDomElement('img', '', 'weatherIcon');
+  weatherDiv.append(weatherP, weatherPValue, weatherIcon);
   modalBody.append(countryDiv, temperatureDiv, weatherDiv);
 
   const modalFooter = createDomElement("div", "modal-footer");

@@ -102,3 +102,8 @@ body{
 .modal-body div p:last-child{
   font-weight: bolder;
 }
+
+.modal-custom-color{
+  background-color: #192E36 !important;
+  color: #fff !important;
+}
